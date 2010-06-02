@@ -25,7 +25,18 @@ from Cheetah.Utils.Misc import mkdirsWithPyInitFiles
 
 optionDashesRE = re.compile(  R"^-{1,2}"  )
 moduleNameRE = re.compile(  R"^[a-zA-Z_][a-zA-Z_0-9]*$"  )
-   
+
+class UnicodeOptionParser(OptionParser):
+    """OptionParser subclass that treats the commandline as a utf-8 encoded bytestring
+
+    Needed because yelp passes some command-line arguments that aren't ASCII.
+    """
+    def _get_args(self, args):
+        if args is None:
+            return [unicode(arg, 'utf-8') for arg in args[1:]]
+        else:
+            return [unicode(arg, 'utf-8') for arg in args]
+
 def fprintfMessage(stream, format, *args):
     if format[-1:] == '^':
         format = format[:-1]
@@ -154,7 +165,7 @@ class CheetahWrapper(object):
         C, D, W = self.chatter, self.debug, self.warn
         self.isCompile = isCompile = self.command[0] == 'c'
         defaultOext = isCompile and ".py" or ".html"
-        self.parser = OptionParser()
+        self.parser = UnicodeOptionParser()
         pao = self.parser.add_option
         pao("--idir", action="store", dest="idir", default='', help='Input directory (defaults to current directory)')
         pao("--odir", action="store", dest="odir", default="", help='Output directory (defaults to current directory)')

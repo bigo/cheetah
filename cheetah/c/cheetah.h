@@ -44,6 +44,13 @@
 
 #define PYARGS PyObject *self, PyObject *args, PyObject *kwargs
 
+/*
+ * PyUnicode_FromFormat not included in python < 2.6
+ */
+#ifndef PyUnicode_FromFormat
+#define PyUnicode_FromFormat(...) PyString_FromFormat(__VA_ARGS__)
+#endif
+
 
 /*
  * _namemapper.c specific definitions 

@@ -1572,7 +1572,8 @@ class ModuleCompiler(SettingsManager, GenUtils):
                     encoding = encodings[0]
                     source = source.decode(encoding)
             else:
-                source = unicode(source)
+                # assume source files are utf-8 rather than ascii, cuz it makes life easier
+                source = unicode(source, 'utf-8')
 
         if source.find('#indent') != -1: #@@TR: undocumented hack
             source = indentize(source)
